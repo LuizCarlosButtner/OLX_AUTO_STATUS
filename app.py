@@ -73,48 +73,38 @@ try:
     except TimeoutException: # Esta exceção é levantada pelo WebDriverWait se o tempo esgotar.
         print("Botão de cookies não apareceu ou não se tornou clicável em 30 segundos.")
 
-    # Esperar a página carregar. Vamos aguardar até que a lista de anúncios esteja presente.
-    # O ID 'ad-list' é comumente usado pela OLX para a lista de resultados.
-    # NOVA ESTRATÉGIA: Esperar pelo container principal 'main-content' e depois verificar o que há dentro.
-    print("Passo 6: Aguardando o conteúdo principal ('main-content') carregar")
+    # Passo 7: Iterar 20 vezes mudando o seletor CSS
+    print("\nPasso 7: Tentando capturar a URL de 20 anúncios com seletores dinâmicos...")
     try:
+        # Espera o container principal carregar para garantir que a busca não seja prematura
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "main-content")))
-        print("Ok, container principal ('main-content') carregado!")
+        print("Container principal carregado. Iniciando a busca pelos links...")
+
+        urls_encontradas = []
+        for i in range(1, 21):  # Loop de 1 a 20
+            # Seletor CSS dinâmico com nth-child
+            seletor_css = f"#main-content > div.AdListing_adListContainer__ALQla > section:nth-child({i}) > div.olx-adcard__content > div.olx-adcard__topbody > a"
+            
+            try:
+                # Espera o link específico da iteração aparecer e o captura
+                link_element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, seletor_css)))
+                url_encontrada = link_element.get_attribute('href')
+                urls_encontradas.append(url_encontrada)
+                print(f"URL {i}: {url_encontrada}")
+            
+            except TimeoutException:
+                print(f"AVISO: O anúncio com nth-child({i}) não foi encontrado em 5 segundos. Pode não existir ou a página não carregou a tempo.")
+                # Continua para a próxima iteração
+
+        print("\n--- URLs Encontradas ---")
+        for url_item in urls_encontradas:
+            print(url_item)
+        print(f"----------------------\nTotal de URLs capturadas: {len(urls_encontradas)}")
+
     except TimeoutException:
-        print("ERRO CRÍTICO: O container 'main-content' não foi encontrado. A página pode ter mudado ou houve um erro de carregamento.")
-        driver.quit()
-        exit()
-
-    # NOVA ESTRATÉGIA: Esperar diretamente pelo primeiro anúncio aparecer.
-    # Se ele não aparecer, verificamos se é porque não há resultados.
-    print("Passo 7: Aguardando o primeiro anúncio da lista carregar...")
-    try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "section[data-testid='ad-card']")))
-        print("Ok, primeiro anúncio encontrado!")
-    except TimeoutException:
-        print("Nenhum anúncio encontrado para os filtros definidos ou a página não carregou. Encerrando a busca.")
-        driver.quit()
-        exit()
-
-    # Agora que temos certeza que os anúncios carregaram, vamos pegá-los.
-    lista_anuncios = driver.find_elements(By.CSS_SELECTOR, "section[data-testid='ad-card']")
-    print(f"Encontrados {len(lista_anuncios)} anúncios na primeira página.")
-
-    urls_anuncios = []
-    print("\nPasso 7.1: Extraindo as URLs dos anúncios...")
-    for anuncio in lista_anuncios:
-        try:
-            # Usando um seletor CSS mais específico para encontrar o link principal do anúncio.
-            link_element = anuncio.find_element(By.CSS_SELECTOR, 'a[data-testid="ad-card-link"]')
-            urls_anuncios.append(link_element.get_attribute('href'))
-        except Exception as e:
-            # Ignora se um dos cards não for um anúncio válido (ex: publicidade)
-            pass
-    
-    print("\n--- URLs Encontradas ---")
-    for url_item in urls_anuncios:
-        print(url_item)
-    print("--------------------------\n")
+        print("\nERRO: O container principal 'main-content' não foi encontrado. A página pode não ter carregado corretamente.")
+    except Exception as e:
+        print(f"Ocorreu um erro inesperado durante a busca: {e}")
 
     time.sleep(5) # Pausa para você poder ver o navegador antes de fechar
 
