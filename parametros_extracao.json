@@ -1,0 +1,71 @@
+{
+    "titulo": [
+        {
+            "strategy": "id",
+            "selector": "description-title"
+        }
+    ],
+    "preco": [
+        {
+            "strategy": "css",
+            "selector": "#price-box-container > div > div:nth-child(1) > div > span > span",
+            "regex": "R\\$\\s?[\\d\\.,]+"
+        }
+    ],
+    "preco_medio": [
+        {
+            "strategy": "css",
+            "selector": "div.olx-d-flex.olx-ai-center span",
+            "regex": "R\\$\\s?[\\d\\.,]+"
+        }
+    ],
+    "fipe": [
+        {
+            "strategy": "css",
+            "selector": "#adview-teste div.olx-container--outlined > div > div > div:nth-child(2) span",
+            "regex": "R\\$\\s?[\\d\\.,]+"
+        }
+    ],
+    "data_de_postagem": [
+        {
+            "strategy": "css",
+            "selector": "#adview-teste > div > div > div > span",
+            "regex": "\\d{2}/\\d{2}\\sàs\\s\\d{2}:\\d{2}"
+        }
+    ],
+    "km": [
+        {
+            "strategy": "css",
+            "selector": "#details > div > div > div:nth-child(6) span:nth-of-type(2)",
+            "regex": "\\d{2,9}"
+        }
+    ],
+    "ano": [
+        {
+            "strategy": "css",
+            "selector": "#details > div > div > div:nth-child(5) > div > a",
+            "regex": "\\d{4}"
+        }
+    ],
+    "opcionais": [
+        {
+            "strategy": "css",
+            "selector": "div.ad__sc-1jr3zuf-0 > div > div span",
+            "is_list": true
+        }
+    ],
+    "vendedor_desde": [
+        {
+            "strategy": "css",
+            "selector": "#adview-teste > div > div > div.ad__sc-18pfc7g-0 > div",
+            "regex": "Na OLX desde\\s+[A-Za-zç]+\\sde\\s\\d{4}"
+        }
+    ],
+    "localizacao": [
+        {
+            "strategy": "css",
+            "selector": "#location > div > div > div > span",
+            "regex": null
+        }
+    ]
+}

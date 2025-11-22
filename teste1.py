@@ -1,139 +1,21 @@
 # -*- coding: utf-8 -*-
 
 # Importamos apenas a função principal de 'busca_dados2.py'
+import json
 from busca_dados2 import get_ad_details
+
+def load_extraction_params(file_path='parametros_extracao.json'):
+    """Carrega os parâmetros de extração de um arquivo JSON."""
+    print(f">>> Carregando parâmetros de '{file_path}'...")
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 def main():
     # 1. Defina a URL que você quer buscar
     url_alvo = "https://rj.olx.com.br/rio-de-janeiro-e-regiao/autos-e-pecas/carros-vans-e-utilitarios/fiat-palio-2007-leia-o-anuncio-1454664719?rec=a&lis=vi_web%7C2020%7Cwho_saw_also_saw%7C0"
     
-    # 2. Defina os parâmetros de extração
-    # Cada chave ('titulo', 'preco') tem uma lista de tentativas (dicionários).
-    # A extração para em na primeira tentativa bem-sucedida para cada chave.
-    parametros_extracao = {
-            # 'titulo': [
-            # #     # Estratégia Melhorada: Usar seletor CSS para ser mais específico.
-            # #     # Isso busca por um h1 DENTRO do elemento com id 'description-title'.
-            # #     # É mais robusto se o site adicionar outros textos dentro do mesmo container.
-            # #     {'strategy': 'css', 'selector': '#description-title h1'},
-            # #     # Fallback (Plano B): Se o seletor acima falhar, tenta o original.
-            #     {'strategy': 'id', 'selector': 'description-title'}
-            # ],
-
-            # 'preco': [
-
-            #     {'strategy': 'css', 'selector': '#price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
-            # ],
-
-            # 'preco_medio': [
-            #     # ESTRATÉGIA 1: Container de Borda (Mais provável)
-            #     # O preço médio costuma ficar numa caixa destacada com a classe 'olx-container--outlined'.
-            #     # Buscamos por qualquer 'span' lá dentro que pareça um preço.
-            #     {'strategy': 'css', 'selector': 'div.olx-d-flex.olx-ai-center span', 'regex': r'R\$\s?[\d\.,]+'}        ],
-            # 'preco': [
-            #     {'strategy': 'id', 'selector': 'price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
-            #     {'strategy': 'css', 'selector': 'h2[aria-label^="Preço"]', 'regex': r'R\$\s?[\d\.,]+'},
-            # ],
-
-            # 'fipe': [
-            #     # ESTRATÉGIA: Caminho Hierárquico Completo (Baseado no seu seletor)
-            #     # Tradução: 
-            #     # 1. Começa em #adview-teste
-            #     # 2. Desce até achar a caixa com borda (olx-container--outlined)
-            #     # 3. Entra na estrutura interna e pega OBRIGATORIAMENTE o 2º filho (nth-child(2))
-            #     # 4. Pega o span lá dentro.
-            #     {
-            #         'strategy': 'css', 
-            #         'selector': '#adview-teste div.olx-container--outlined > div > div > div:nth-child(2) span', 
-            #         'regex': r'R\$\s?[\d\.,]+'
-            #     },
-                
-            #     # FALLBACK: Caso a estrutura mude levemente, tenta pegar pelo atributo de link
-            #     # (Muitas vezes o preço da Fipe é um link para a tabela).
-            #     # {
-            #     #     'strategy': 'css', 
-            #     #     'selector': 'a[href*="fipe"]', 
-            #     #     'regex': r'R\$\s?[\d\.,]+'
-            #     # }
-            # ],
-
-            # 'data_de_postagem': [
-            #     # ESTRATÉGIA: Hierarquia Rigorosa (Seletor mantido, Regex ajustado)
-            #     {
-            #         'strategy': 'css', 
-            #         # Mantemos o seletor que funcionou para você
-            #         'selector': '#adview-teste > div > div > div > div > div:nth-child(3) > div:nth-child(1) > div > div span',
-            #         # NOVO REGEX: Captura formato "18/11 às 13:16"
-            #         'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}' 
-            #     },
-                
-            #     # FALLBACK: Procura esse padrão de data em qualquer lugar do painel
-            #     {
-            #         'strategy': 'css',
-            #         'selector': '#adview-teste span',
-            #         'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}'
-            #     }
-            # ],
-
-            # 'km': [
-            #         # ESTRATÉGIA: Posição Fixa (6º item) + Filtro numérico estrito
-            #         {
-            #             'strategy': 'css', 
-            #             'selector': '#details > div > div > div:nth-child(6) span:nth-of-type(2)',                # Regex: Busca de 2 a 9 dígitos consecutivos.
-            #             'regex': r'\d{2,9}'            }
-            #     ],
-        
-            # 'ano': [
-            #     # ESTRATÉGIA: Posição Fixa (Provavelmente o 5º item, logo antes da KM)
-            #     {
-            #         'strategy': 'css', 
-            #         # Mudamos para nth-child(5) e pegamos o segundo span (o valor)
-            #         'selector': '#details > div > div > div:nth-child(5) > div > a', 
-            #         # Regex: Procura exatamente 4 dígitos (Ex: 2008)
-            #         'regex': r'\d{4}' 
-            #     }
-            # ],
-
-            # 'opcionais': [
-            #     # ESTRATÉGIA: Iterar sobre os itens da grade
-            #     # O seletor busca a div container específica (ad__sc-1jr3zuf-0)
-            #     # e pega TODOS os spans que estão dentro das divs filhas.
-            #     {
-            #         'strategy': 'css',
-            #         # Tradução: Dentro da grid de opcionais, entre nas divs e pegue os spans
-            #         'selector': 'div.ad__sc-1jr3zuf-0 > div > div span',
-            #         # Flag personalizada para indicar que queremos múltiplos resultados
-            #         'is_list': True 
-            #     }
-            # ]
-        #     'vendedor_desde': [
-        #     # ESTRATÉGIA: Varredura na Área do Vendedor
-        #     # 1. O Selector aponta para a CAIXA PAI (sidebar do vendedor) que você identificou.
-        #     # 2. O espaço + "span" diz: "pegue TODOS os spans descendentes, não importa a profundidade".
-        #     # 3. O Regex filtra apenas aquele que tem a data.
-        #     {
-        #         'strategy': 'css',
-        #         # Selector: ID Principal -> Container Geral -> Caixa do Vendedor (fMpeZL) -> Qualquer Span
-        #         'selector': '#adview-teste > div > div > div.ad__sc-18pfc7g-0 > div',
-                
-        #         # Regex: A "peneira" que só deixa passar a frase correta
-        #         # Exemplo alvo: "Na OLX desde julho de 2025"
-        #         'regex': r'Na OLX desde\s+[A-Za-zç]+\sde\s\d{4}'
-        #     }
-        # ],
-        
-        'localizacao': [
-            {
-                'strategy': 'css',
-                'selector': '#location > div > div > div > span',
-                'regex': None
-            }
-        ],
-        
-        
-        
-        
-        }
+    # 2. Carrega os parâmetros de extração do arquivo JSON
+    parametros_extracao = load_extraction_params()
 
     print(">>> Iniciando o processo de raspagem...")
 
@@ -143,6 +25,11 @@ def main():
 
     # 4. Imprime os resultados formatados
     print("RELATÓRIO DE DADOS EXTRAÍDOS")
+    # 4. Verifica se a extração foi bem-sucedida e imprime no formato de alerta
+    if dados_retornados:
+        print("\n" + "="*40)
+        print("RELATÓRIO DE DADOS EXTRAÍDOS")
+        print("="*40)
 
     # Tratamento especial para Lista de Opcionais
     opcionais = dados_retornados.get('opcionais')
@@ -152,6 +39,8 @@ def main():
     else:
         # Se for texto ou None, mantém como está
         opcionais_texto = opcionais
+        # Adiciona a URL do anúncio ao dicionário para ser usada na mensagem
+        dados_retornados['url_anuncio'] = url_alvo
 
     print(f"OPCIONAIS:         {opcionais_texto}")
     
@@ -161,6 +50,10 @@ def main():
             titulo_completo = dados_retornados.get('titulo')
             texto1 = ""
             texto2 = ""
+        # Monta a mensagem formatada usando f-string
+        # O .get(chave, 'N/A') garante que o script não quebre se um campo não for encontrado
+        mensagem = f"""
+🚨 *ALERTA DE MONITORAMENTO* 🚨
 
             if titulo_completo and '\n' in titulo_completo:
                 # Divide o título no primeiro '\n' e limita a 2 partes
@@ -168,9 +61,23 @@ def main():
                 texto1 = partes[0]
                 texto2 = partes[1].strip() if len(partes) > 1 else ""
             else:
-                texto1 = titulo_completo or "N/A" # Garante que não seja None
+                texto1 = titulo_completo or "N/A"  # Garante que não seja None
+🚗 *{dados_retornados.get('titulo', 'N/A')}*
 
         print(dados_retornados)
+💰 *Valor:* {dados_retornados.get('preco', 'N/A')}
+📊 *FIPE:* {dados_retornados.get('fipe', 'N/A')}
+
+📅 *Ano:* {dados_retornados.get('ano', 'N/A')}
+🛣️ *KM:* {dados_retornados.get('km', 'N/A')}
+📍 *Local:* {dados_retornados.get('localizacao', 'N/A')}
+
+👤 {dados_retornados.get('vendedor_desde', 'N/A')}
+⏰ Postado: {dados_retornados.get('data_de_postagem', 'N/A')}
+
+🔗 {dados_retornados.get('url_anuncio', 'N/A')}
+"""
+        print(mensagem)
     else:
         print("Falha: A função retornou None ou dados vazios.")
 
