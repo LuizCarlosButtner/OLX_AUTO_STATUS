@@ -1,0 +1,32 @@
+{
+  "nome_pesquisa": "",
+  "url_base": "https://www.olx.com.br/autos-e-pecas/carros-vans-e-utilitarios",
+  "estado": "rj",
+  "marca": "gm-chevrolet",
+  "modelo": "celta",
+  "gnv": 0, 
+  "anunciante_particular": "f=p", 
+  "ordenar_recentes": "sf=1",
+  "palavras_chave_titulo_descricao": "",
+
+
+  "ano": {
+    "start": 2000,
+    "end": 2015
+  },
+  "valor": {
+    "minimo": 5000,
+    "maximo": 15000
+  },
+  "kilometragem": {
+    "start": 0,
+    "end": 200000
+  },
+  
+
+  
+
+
+  "palavras_chave_obrigatorias_descricao": [],
+  "palavras_chave_proibidas_descricao": []
+}
