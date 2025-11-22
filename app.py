@@ -49,7 +49,7 @@ def get_ad_urls(params_file='parametros.json'):
     service = Service(ChromeDriverManager().install())
     options = Options()
     options.page_load_strategy = 'none'
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     driver = webdriver.Chrome(service=service, options=options)
     
     urls_encontradas = []

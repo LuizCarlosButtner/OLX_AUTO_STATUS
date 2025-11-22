@@ -83,6 +83,16 @@ def main():
         #             'regex': r'\d{2,9}'            }
         #     ],
     
+        # 'ano': [
+        #     # ESTRATÉGIA: Posição Fixa (Provavelmente o 5º item, logo antes da KM)
+        #     {
+        #         'strategy': 'css', 
+        #         # Mudamos para nth-child(5) e pegamos o segundo span (o valor)
+        #         'selector': '#details > div > div > div:nth-child(5) > div > a', 
+        #         # Regex: Procura exatamente 4 dígitos (Ex: 2008)
+        #         'regex': r'\d{4}' 
+        #     }
+        # ],
     }
 
     print(">>> Iniciando o processo de raspagem...")
