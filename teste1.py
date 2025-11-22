@@ -75,6 +75,14 @@ def main():
     #         }
     #     ],
 
+        # 'km': [
+        #         # ESTRATÉGIA: Posição Fixa (6º item) + Filtro numérico estrito
+        #         {
+        #             'strategy': 'css', 
+        #             'selector': '#details > div > div > div:nth-child(6) span:nth-of-type(2)',                # Regex: Busca de 2 a 9 dígitos consecutivos.
+        #             'regex': r'\d{2,9}'            }
+        #     ],
+    
     }
 
     print(">>> Iniciando o processo de raspagem...")
