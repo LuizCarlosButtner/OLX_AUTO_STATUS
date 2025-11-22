@@ -93,7 +93,20 @@ def main():
         #         'regex': r'\d{4}' 
         #     }
         # ],
-        
+
+        'opcionais': [
+            # ESTRATÉGIA: Iterar sobre os itens da grade
+            # O seletor busca a div container específica (ad__sc-1jr3zuf-0)
+            # e pega TODOS os spans que estão dentro das divs filhas.
+            {
+                'strategy': 'css',
+                # Tradução: Dentro da grid de opcionais, entre nas divs e pegue os spans
+                'selector': 'div.ad__sc-1jr3zuf-0 > div > div span',
+                # Flag personalizada para indicar que queremos múltiplos resultados
+                'is_list': True 
+            }
+        ]
+
     }
 
     print(">>> Iniciando o processo de raspagem...")
@@ -104,6 +117,17 @@ def main():
 
     # 4. Imprime os resultados formatados
     print("RELATÓRIO DE DADOS EXTRAÍDOS")
+
+    # Tratamento especial para Lista de Opcionais
+    opcionais = dados_retornados.get('opcionais')
+    if isinstance(opcionais, list):
+        # Se for uma lista, junta tudo com vírgulas
+        opcionais_texto = ", ".join(opcionais)
+    else:
+        # Se for texto ou None, mantém como está
+        opcionais_texto = opcionais
+
+    print(f"OPCIONAIS:         {opcionais_texto}")
     
     if dados_retornados:
         # Verifica se 'titulo' foi um dos parâmetros de extração solicitados

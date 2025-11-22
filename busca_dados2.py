@@ -20,7 +20,7 @@ def initialize_driver():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
 
-def extract_element_text(soup, strategy, selector, regex=None):
+def extract_element_text(soup, strategy, selector, regex=None, is_list=False):
     """
     Componente genérico para extrair texto de elementos HTML.
     
@@ -29,34 +29,43 @@ def extract_element_text(soup, strategy, selector, regex=None):
         strategy (str): A estratégia de busca ('id', 'css', 'tag').
         selector (str): O valor do seletor (ex: 'description-title', 'h1', '.classe').
         regex (str, optional): Padrão Regex para filtrar o texto encontrado.
+        is_list (bool): Se True, busca todos os elementos e retorna uma lista de textos.
         
     Returns:
-        str ou None: O texto encontrado/filtrado ou None se falhar.
+        str, list ou None: O texto encontrado, uma lista de textos ou None se falhar.
     """
-    element = None
-    
-    # 1. Encontra o elemento baseando-se na estratégia
-    if strategy == 'id':
-        element = soup.find(id=selector)
-    elif strategy == 'css':
-        element = soup.select_one(selector)
-    elif strategy == 'tag':
-        element = soup.find(selector)
-    
-    # 2. Se encontrou o elemento, extrai e processa o texto
-    if element:
-        text_content = element.get_text(separator=" ", strip=True)
+    if is_list:
+        if strategy != 'css':
+            print("Aviso: 'is_list' só é suportado com a estratégia 'css'.")
+            return None
+        elements = soup.select(selector)
+        if not elements:
+            return None
+        return [el.get_text(strip=True) for el in elements]
+    else:
+        element = None
+        # 1. Encontra o elemento baseando-se na estratégia
+        if strategy == 'id':
+            element = soup.find(id=selector)
+        elif strategy == 'css':
+            element = soup.select_one(selector)
+        elif strategy == 'tag':
+            element = soup.find(selector)
         
-        # 3. Se um regex foi passado, aplica ele sobre o texto
-        if regex:
-            match = re.search(regex, text_content)
-            if match:
-                return match.group(0)
-            return None # Elemento existe, mas regex não bateu
+        # 2. Se encontrou o elemento, extrai e processa o texto
+        if element:
+            text_content = element.get_text(separator=" ", strip=True)
             
-        return text_content
-    
-    return None
+            # 3. Se um regex foi passado, aplica ele sobre o texto
+            if regex:
+                match = re.search(regex, text_content)
+                if match:
+                    return match.group(0)
+                return None # Elemento existe, mas regex não bateu
+                
+            return text_content
+        
+    return []
 
 def get_ad_details(url, extraction_params):
     """
@@ -111,7 +120,8 @@ def get_ad_details(url, extraction_params):
                     soup,
                     strategy=strategy_config['strategy'],
                     selector=strategy_config['selector'],
-                    regex=strategy_config.get('regex') # .get() para o caso de não ter regex
+                    regex=strategy_config.get('regex'),
+                    is_list=strategy_config.get('is_list', False)
                 )
                 if value:
                     found_value = value
@@ -136,23 +146,21 @@ if __name__ == "__main__":
     test_url = "https://rj.olx.com.br/rio-de-janeiro-e-regiao/autos-e-pecas/carros-vans-e-utilitarios/chevrolet-celta-life-ls-1-0-mpfi-8v-flexpower-3p-2008-1455189125"
     
     # Parâmetros de extração para o teste
-    test_params = {
-        'titulo': [
-            {'strategy': 'id', 'selector': 'description-title'},
-            {'strategy': 'tag', 'selector': 'h1'}
-        ],
-        'preco': [
-            {'strategy': 'id', 'selector': 'price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
-            {'strategy': 'css', 'selector': 'h2[aria-label^="Preço"]', 'regex': r'R\$\s?[\d\.,]+'},
-        ],
-        'codigo': [
-            {'strategy': 'css', 'selector': 'span[color="dark"]', 'regex': r'\d{9,}'}
-        ]
-    }
+    # test_params = {
+    #     'titulo': [
+    #         {'strategy': 'id', 'selector': 'description-title'},
+    #         {'strategy': 'tag', 'selector': 'h1'}
+    #     ],
+    #     'preco': [
+    #         {'strategy': 'id', 'selector': 'price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
+    #         {'strategy': 'css', 'selector': 'h2[aria-label^="Preço"]', 'regex': r'R\$\s?[\d\.,]+'},
+    #     ],
+    #     'codigo': [
+    #         {'strategy': 'css', 'selector': 'span[color="dark"]', 'regex': r'\d{9,}'}
+    #     ]
+    # }
 
     # Executa a função
-    dados = get_ad_details(test_url, test_params)
+    # dados = get_ad_details(test_url, test_params)
     
-    print("-" * 30)
-    print("Resultado do teste:")
-    print(dados)
+  
