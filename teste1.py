@@ -106,21 +106,32 @@ def main():
             #         'is_list': True 
             #     }
             # ]
-'vendedor_desde': [
-            # ESTRATÉGIA: Varredura na Área do Vendedor
-            # 1. O Selector aponta para a CAIXA PAI (sidebar do vendedor) que você identificou.
-            # 2. O espaço + "span" diz: "pegue TODOS os spans descendentes, não importa a profundidade".
-            # 3. O Regex filtra apenas aquele que tem a data.
+        #     'vendedor_desde': [
+        #     # ESTRATÉGIA: Varredura na Área do Vendedor
+        #     # 1. O Selector aponta para a CAIXA PAI (sidebar do vendedor) que você identificou.
+        #     # 2. O espaço + "span" diz: "pegue TODOS os spans descendentes, não importa a profundidade".
+        #     # 3. O Regex filtra apenas aquele que tem a data.
+        #     {
+        #         'strategy': 'css',
+        #         # Selector: ID Principal -> Container Geral -> Caixa do Vendedor (fMpeZL) -> Qualquer Span
+        #         'selector': '#adview-teste > div > div > div.ad__sc-18pfc7g-0 > div',
+                
+        #         # Regex: A "peneira" que só deixa passar a frase correta
+        #         # Exemplo alvo: "Na OLX desde julho de 2025"
+        #         'regex': r'Na OLX desde\s+[A-Za-zç]+\sde\s\d{4}'
+        #     }
+        # ],
+        
+        'localizacao': [
             {
                 'strategy': 'css',
-                # Selector: ID Principal -> Container Geral -> Caixa do Vendedor (fMpeZL) -> Qualquer Span
-                'selector': '#adview-teste > div > div > div.ad__sc-18pfc7g-0 > div',
-                
-                # Regex: A "peneira" que só deixa passar a frase correta
-                # Exemplo alvo: "Na OLX desde julho de 2025"
-                'regex': r'Na OLX desde\s+[A-Za-zç]+\sde\s\d{4}'
+                'selector': '#location > div > div > div > span',
+                'regex': None
             }
         ],
+        
+        
+        
         
         }
 
