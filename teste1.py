@@ -35,29 +35,46 @@ def main():
         #     {'strategy': 'css', 'selector': 'h2[aria-label^="Preço"]', 'regex': r'R\$\s?[\d\.,]+'},
         # ]
 
-        # ... (chaves anteriores: titulo, preco, preco_medio) ...
-
-'fipe': [
-            # ESTRATÉGIA: Caminho Hierárquico Completo (Baseado no seu seletor)
-            # Tradução: 
-            # 1. Começa em #adview-teste
-            # 2. Desce até achar a caixa com borda (olx-container--outlined)
-            # 3. Entra na estrutura interna e pega OBRIGATORIAMENTE o 2º filho (nth-child(2))
-            # 4. Pega o span lá dentro.
-            {
-                'strategy': 'css', 
-                'selector': '#adview-teste div.olx-container--outlined > div > div > div:nth-child(2) span', 
-                'regex': r'R\$\s?[\d\.,]+'
-            },
+# 'fipe': [
+#             # ESTRATÉGIA: Caminho Hierárquico Completo (Baseado no seu seletor)
+#             # Tradução: 
+#             # 1. Começa em #adview-teste
+#             # 2. Desce até achar a caixa com borda (olx-container--outlined)
+#             # 3. Entra na estrutura interna e pega OBRIGATORIAMENTE o 2º filho (nth-child(2))
+#             # 4. Pega o span lá dentro.
+#             {
+#                 'strategy': 'css', 
+#                 'selector': '#adview-teste div.olx-container--outlined > div > div > div:nth-child(2) span', 
+#                 'regex': r'R\$\s?[\d\.,]+'
+#             },
             
-            # FALLBACK: Caso a estrutura mude levemente, tenta pegar pelo atributo de link
-            # (Muitas vezes o preço da Fipe é um link para a tabela).
-            {
-                'strategy': 'css', 
-                'selector': 'a[href*="fipe"]', 
-                'regex': r'R\$\s?[\d\.,]+'
-            }
-        ],
+#             # FALLBACK: Caso a estrutura mude levemente, tenta pegar pelo atributo de link
+#             # (Muitas vezes o preço da Fipe é um link para a tabela).
+#             # {
+#             #     'strategy': 'css', 
+#             #     'selector': 'a[href*="fipe"]', 
+#             #     'regex': r'R\$\s?[\d\.,]+'
+#             # }
+#         ],
+
+    # 'vendedor_desde': [
+    #         # ESTRATÉGIA: Hierarquia Rigorosa (Seletor mantido, Regex ajustado)
+    #         {
+    #             'strategy': 'css', 
+    #             # Mantemos o seletor que funcionou para você
+    #             'selector': '#adview-teste > div > div > div > div > div:nth-child(3) > div:nth-child(1) span',
+    #             # NOVO REGEX: Captura formato "18/11 às 13:16"
+    #             'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}' 
+    #         },
+            
+    #         # FALLBACK: Procura esse padrão de data em qualquer lugar do painel
+    #         {
+    #             'strategy': 'css',
+    #             'selector': '#adview-teste span',
+    #             'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}'
+    #         }
+    #     ],
+
     }
 
     print(">>> Iniciando o processo de raspagem...")
