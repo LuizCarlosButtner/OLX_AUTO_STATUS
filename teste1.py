@@ -93,6 +93,7 @@ def main():
         #         'regex': r'\d{4}' 
         #     }
         # ],
+        
     }
 
     print(">>> Iniciando o processo de raspagem...")
