@@ -11,103 +11,118 @@ def main():
     # Cada chave ('titulo', 'preco') tem uma lista de tentativas (dicionários).
     # A extração para em na primeira tentativa bem-sucedida para cada chave.
     parametros_extracao = {
-        # 'titulo': [
-        # #     # Estratégia Melhorada: Usar seletor CSS para ser mais específico.
-        # #     # Isso busca por um h1 DENTRO do elemento com id 'description-title'.
-        # #     # É mais robusto se o site adicionar outros textos dentro do mesmo container.
-        # #     {'strategy': 'css', 'selector': '#description-title h1'},
-        # #     # Fallback (Plano B): Se o seletor acima falhar, tenta o original.
-        #     {'strategy': 'id', 'selector': 'description-title'}
-        # ],
+            # 'titulo': [
+            # #     # Estratégia Melhorada: Usar seletor CSS para ser mais específico.
+            # #     # Isso busca por um h1 DENTRO do elemento com id 'description-title'.
+            # #     # É mais robusto se o site adicionar outros textos dentro do mesmo container.
+            # #     {'strategy': 'css', 'selector': '#description-title h1'},
+            # #     # Fallback (Plano B): Se o seletor acima falhar, tenta o original.
+            #     {'strategy': 'id', 'selector': 'description-title'}
+            # ],
 
-        # 'preco': [
+            # 'preco': [
 
-        #     {'strategy': 'css', 'selector': '#price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
-        # ],
+            #     {'strategy': 'css', 'selector': '#price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
+            # ],
 
-        # 'preco_medio': [
-        #     # ESTRATÉGIA 1: Container de Borda (Mais provável)
-        #     # O preço médio costuma ficar numa caixa destacada com a classe 'olx-container--outlined'.
-        #     # Buscamos por qualquer 'span' lá dentro que pareça um preço.
-        #     {'strategy': 'css', 'selector': 'div.olx-d-flex.olx-ai-center span', 'regex': r'R\$\s?[\d\.,]+'}        ],
-        # 'preco': [
-        #     {'strategy': 'id', 'selector': 'price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
-        #     {'strategy': 'css', 'selector': 'h2[aria-label^="Preço"]', 'regex': r'R\$\s?[\d\.,]+'},
-        # ]
+            # 'preco_medio': [
+            #     # ESTRATÉGIA 1: Container de Borda (Mais provável)
+            #     # O preço médio costuma ficar numa caixa destacada com a classe 'olx-container--outlined'.
+            #     # Buscamos por qualquer 'span' lá dentro que pareça um preço.
+            #     {'strategy': 'css', 'selector': 'div.olx-d-flex.olx-ai-center span', 'regex': r'R\$\s?[\d\.,]+'}        ],
+            # 'preco': [
+            #     {'strategy': 'id', 'selector': 'price-box-container', 'regex': r'R\$\s?[\d\.,]+'},
+            #     {'strategy': 'css', 'selector': 'h2[aria-label^="Preço"]', 'regex': r'R\$\s?[\d\.,]+'},
+            # ],
 
-# 'fipe': [
-#             # ESTRATÉGIA: Caminho Hierárquico Completo (Baseado no seu seletor)
-#             # Tradução: 
-#             # 1. Começa em #adview-teste
-#             # 2. Desce até achar a caixa com borda (olx-container--outlined)
-#             # 3. Entra na estrutura interna e pega OBRIGATORIAMENTE o 2º filho (nth-child(2))
-#             # 4. Pega o span lá dentro.
-#             {
-#                 'strategy': 'css', 
-#                 'selector': '#adview-teste div.olx-container--outlined > div > div > div:nth-child(2) span', 
-#                 'regex': r'R\$\s?[\d\.,]+'
-#             },
-            
-#             # FALLBACK: Caso a estrutura mude levemente, tenta pegar pelo atributo de link
-#             # (Muitas vezes o preço da Fipe é um link para a tabela).
-#             # {
-#             #     'strategy': 'css', 
-#             #     'selector': 'a[href*="fipe"]', 
-#             #     'regex': r'R\$\s?[\d\.,]+'
-#             # }
-#         ],
+            # 'fipe': [
+            #     # ESTRATÉGIA: Caminho Hierárquico Completo (Baseado no seu seletor)
+            #     # Tradução: 
+            #     # 1. Começa em #adview-teste
+            #     # 2. Desce até achar a caixa com borda (olx-container--outlined)
+            #     # 3. Entra na estrutura interna e pega OBRIGATORIAMENTE o 2º filho (nth-child(2))
+            #     # 4. Pega o span lá dentro.
+            #     {
+            #         'strategy': 'css', 
+            #         'selector': '#adview-teste div.olx-container--outlined > div > div > div:nth-child(2) span', 
+            #         'regex': r'R\$\s?[\d\.,]+'
+            #     },
+                
+            #     # FALLBACK: Caso a estrutura mude levemente, tenta pegar pelo atributo de link
+            #     # (Muitas vezes o preço da Fipe é um link para a tabela).
+            #     # {
+            #     #     'strategy': 'css', 
+            #     #     'selector': 'a[href*="fipe"]', 
+            #     #     'regex': r'R\$\s?[\d\.,]+'
+            #     # }
+            # ],
 
-    # 'vendedor_desde': [
-    #         # ESTRATÉGIA: Hierarquia Rigorosa (Seletor mantido, Regex ajustado)
-    #         {
-    #             'strategy': 'css', 
-    #             # Mantemos o seletor que funcionou para você
-    #             'selector': '#adview-teste > div > div > div > div > div:nth-child(3) > div:nth-child(1) span',
-    #             # NOVO REGEX: Captura formato "18/11 às 13:16"
-    #             'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}' 
-    #         },
-            
-    #         # FALLBACK: Procura esse padrão de data em qualquer lugar do painel
-    #         {
-    #             'strategy': 'css',
-    #             'selector': '#adview-teste span',
-    #             'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}'
-    #         }
-    #     ],
+            # 'data_de_postagem': [
+            #     # ESTRATÉGIA: Hierarquia Rigorosa (Seletor mantido, Regex ajustado)
+            #     {
+            #         'strategy': 'css', 
+            #         # Mantemos o seletor que funcionou para você
+            #         'selector': '#adview-teste > div > div > div > div > div:nth-child(3) > div:nth-child(1) > div > div span',
+            #         # NOVO REGEX: Captura formato "18/11 às 13:16"
+            #         'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}' 
+            #     },
+                
+            #     # FALLBACK: Procura esse padrão de data em qualquer lugar do painel
+            #     {
+            #         'strategy': 'css',
+            #         'selector': '#adview-teste span',
+            #         'regex': r'\d{2}/\d{2}\sàs\s\d{2}:\d{2}'
+            #     }
+            # ],
 
-        # 'km': [
-        #         # ESTRATÉGIA: Posição Fixa (6º item) + Filtro numérico estrito
-        #         {
-        #             'strategy': 'css', 
-        #             'selector': '#details > div > div > div:nth-child(6) span:nth-of-type(2)',                # Regex: Busca de 2 a 9 dígitos consecutivos.
-        #             'regex': r'\d{2,9}'            }
-        #     ],
-    
-        # 'ano': [
-        #     # ESTRATÉGIA: Posição Fixa (Provavelmente o 5º item, logo antes da KM)
-        #     {
-        #         'strategy': 'css', 
-        #         # Mudamos para nth-child(5) e pegamos o segundo span (o valor)
-        #         'selector': '#details > div > div > div:nth-child(5) > div > a', 
-        #         # Regex: Procura exatamente 4 dígitos (Ex: 2008)
-        #         'regex': r'\d{4}' 
-        #     }
-        # ],
+            # 'km': [
+            #         # ESTRATÉGIA: Posição Fixa (6º item) + Filtro numérico estrito
+            #         {
+            #             'strategy': 'css', 
+            #             'selector': '#details > div > div > div:nth-child(6) span:nth-of-type(2)',                # Regex: Busca de 2 a 9 dígitos consecutivos.
+            #             'regex': r'\d{2,9}'            }
+            #     ],
+        
+            # 'ano': [
+            #     # ESTRATÉGIA: Posição Fixa (Provavelmente o 5º item, logo antes da KM)
+            #     {
+            #         'strategy': 'css', 
+            #         # Mudamos para nth-child(5) e pegamos o segundo span (o valor)
+            #         'selector': '#details > div > div > div:nth-child(5) > div > a', 
+            #         # Regex: Procura exatamente 4 dígitos (Ex: 2008)
+            #         'regex': r'\d{4}' 
+            #     }
+            # ],
 
-        'opcionais': [
-            # ESTRATÉGIA: Iterar sobre os itens da grade
-            # O seletor busca a div container específica (ad__sc-1jr3zuf-0)
-            # e pega TODOS os spans que estão dentro das divs filhas.
+            # 'opcionais': [
+            #     # ESTRATÉGIA: Iterar sobre os itens da grade
+            #     # O seletor busca a div container específica (ad__sc-1jr3zuf-0)
+            #     # e pega TODOS os spans que estão dentro das divs filhas.
+            #     {
+            #         'strategy': 'css',
+            #         # Tradução: Dentro da grid de opcionais, entre nas divs e pegue os spans
+            #         'selector': 'div.ad__sc-1jr3zuf-0 > div > div span',
+            #         # Flag personalizada para indicar que queremos múltiplos resultados
+            #         'is_list': True 
+            #     }
+            # ]
+'vendedor_desde': [
+            # ESTRATÉGIA: Varredura na Área do Vendedor
+            # 1. O Selector aponta para a CAIXA PAI (sidebar do vendedor) que você identificou.
+            # 2. O espaço + "span" diz: "pegue TODOS os spans descendentes, não importa a profundidade".
+            # 3. O Regex filtra apenas aquele que tem a data.
             {
                 'strategy': 'css',
-                # Tradução: Dentro da grid de opcionais, entre nas divs e pegue os spans
-                'selector': 'div.ad__sc-1jr3zuf-0 > div > div span',
-                # Flag personalizada para indicar que queremos múltiplos resultados
-                'is_list': True 
+                # Selector: ID Principal -> Container Geral -> Caixa do Vendedor (fMpeZL) -> Qualquer Span
+                'selector': '#adview-teste > div > div > div.ad__sc-18pfc7g-0 > div',
+                
+                # Regex: A "peneira" que só deixa passar a frase correta
+                # Exemplo alvo: "Na OLX desde julho de 2025"
+                'regex': r'Na OLX desde\s+[A-Za-zç]+\sde\s\d{4}'
             }
-        ]
-
-    }
+        ],
+        
+        }
 
     print(">>> Iniciando o processo de raspagem...")
 
