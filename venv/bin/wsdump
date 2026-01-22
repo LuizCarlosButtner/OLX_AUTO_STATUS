@@ -1,4 +1,4 @@
-#!/home/alfredo/Documents/PROGRAMAS/OLX_AUTO_STATUS/venv/bin/python3
+#!/Users/agrestudio/Documents/GitHub/OLX_AUTO_STATUS/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

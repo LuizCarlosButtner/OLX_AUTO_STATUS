@@ -6,8 +6,8 @@ def main():
     print(">>> INICIANDO O SISTEMA DE MONITORAMENTO OLX <<<")
     
     # 1. Instancia a classe de busca de URLs e obtém os links
-    # Você pode alterar 'parametros2.json' para o arquivo de configuração desejado
-    url_fetcher = OlxUrlReturner(params_file='parametros2.json')
+    # Você pode alterar 'parametros.json' para o arquivo de configuração desejado
+    url_fetcher = OlxUrlReturner(params_file='parametros.json')
     
     print("\n[FASE 1] Buscando URLs de anúncios...")
     lista_urls = url_fetcher.fetch_urls()

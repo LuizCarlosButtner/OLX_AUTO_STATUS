@@ -1,16 +1,11 @@
 {
     "titulo": [
-        {
-            "strategy": "id",
-            "selector": "description-title"
-        }
+        {"strategy": "id", "selector": "description-title"},
+        {"strategy": "tag", "selector": "h1"}
     ],
     "preco": [
-        {
-            "strategy": "css",
-            "selector": "#price-box-container > div > div:nth-child(1) > div > span > span",
-            "regex": "R\\$\\s?[\\d\\.,]+"
-        }
+        {"strategy": "id", "selector": "price-box-container", "regex": "R\\$\\s?[\\d\\.,]+"},
+        {"strategy": "css", "selector": "h2[aria-label^=\"Preço\"]", "regex": "R\\$\\s?[\\d\\.,]+"}
     ],
     "preco_medio": [
         {
@@ -67,5 +62,8 @@
             "selector": "#location > div > div > div > span",
             "regex": null
         }
+    ],
+    "codigo": [
+        {"strategy": "css", "selector": "span[color=\"dark\"]", "regex": "\\d{9,}"}
     ]
 }
