@@ -125,18 +125,21 @@ def get_ad_urls(params_file='parametros.json'):
 
 # a parte comentada abaixo serve somente para teste÷
 
-# if __name__ == "__main__":
-#     # Exemplo de uso direto da classe
-#     scraper = OlxUrlReturner(params_file='parametros.json')
-#     lista_de_urls = scraper.fetch_urls()
+if __name__ == "__main__":
     
-#     print("\n--- Resultado Final da Execução ---")
-#     if lista_de_urls:
-#         print(f"Total de {len(lista_de_urls)} URLs obtidas:")
-#         for url in lista_de_urls:
-#             print(url)
-#     else:
-#         print("Nenhuma URL foi obtida.")
+    pass
+    # # Codigo de teste abaixo
+    
+    # scraper = OlxUrlReturner(params_file='parametros.json')
+    # lista_de_urls = scraper.fetch_urls()
+    
+    # print("\n--- Resultado Final da Execução ---")
+    # if lista_de_urls:
+    #     print(f"Total de {len(lista_de_urls)} URLs obtidas:")
+    #     for url in lista_de_urls:
+    #         print(url)
+    # else:
+    #     print("Nenhuma URL foi obtida.")
         
         
         

@@ -1,14 +1,13 @@
 import time
 from OlxUrlReturner import OlxUrlReturner
 from OlxAnuncioReturner import OlxAnuncioReturner
+from message_templates import montar_mensagem_padrao  # Importamos o formatador aqui
 
 def main():
     print(">>> INICIANDO O SISTEMA DE MONITORAMENTO OLX <<<")
     
-    # 1. Instancia a classe de busca de URLs e obtém os links
-    # Você pode alterar 'parametros.json' para o arquivo de configuração desejado
+    # 1. Busca URLs
     url_fetcher = OlxUrlReturner(params_file='parametros.json')
-    
     print("\n[FASE 1] Buscando URLs de anúncios...")
     lista_urls = url_fetcher.fetch_urls()
     
@@ -18,24 +17,34 @@ def main():
 
     print(f"\n[SUCESSO] {len(lista_urls)} URLs encontradas. Iniciando extração de detalhes...\n")
     
-    # 2. Instancia a classe de detalhes do anúncio
+    # 2. Instancia o extrator de dados
     ad_processor = OlxAnuncioReturner()
     
-    # 3. Itera sobre cada URL encontrada
+    # 3. Processamento
     for i, url in enumerate(lista_urls, 1):
         print(f"--- Processando Anúncio {i}/{len(lista_urls)} ---")
         
-        # Processa a URL e imprime o resultado formatado
-        relatorio = ad_processor.processar_url(url)
-        print(relatorio)
+        # AQUI MUDOU: Agora recebemos um objeto de dados, não um texto
+        dados_anuncio = ad_processor.processar_url(url)
+        
+        if dados_anuncio:
+            # ---> AQUI VOCÊ PODE INSERIR LÓGICA DE FILTRO OU BANCO DE DADOS <---
+            # Exemplo: if dados_anuncio['preco'] > 50000: continue
             
-        # Pausa para evitar bloqueios e dar tempo de fechar/abrir o navegador
+            # Formata a mensagem para exibição/envio usando os dados extraídos
+            mensagem_final = montar_mensagem_padrao(
+                dados_anuncio, 
+                dados_anuncio['id_anuncio'], 
+                dados_anuncio['titulo_principal'], 
+                dados_anuncio['descricao_anuncio']
+            )
+            
+            print(mensagem_final)
+            
+        else:
+            print(f"Falha ao processar a URL: {url}")
+            
         time.sleep(2)
 
 if __name__ == "__main__":
     main()
-    
-    
-    
-# aqui temos a aplicação principal que usa as outras duas classes para buscar urls e processar cada uma delas
-# primeiro ele busca as urls com a classe OlxUrlReturner e depois processa cada url com a classe OlxAnuncioReturner
